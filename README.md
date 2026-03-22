@@ -17,4 +17,6 @@ Homebrew loader for the Playdate! (https://play.date)
 | 3.0.2 | No | Yes |
 | >3.0.2 | N/A* | Never |
   
-*Some versions are still signed, but majority are not 
+*Some versions are still signed, but majority are not  
+
+ @Scratchminer helped SOO much for this project I cannot thank him enough!
