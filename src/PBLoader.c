@@ -14,7 +14,7 @@ typedef struct {
 
     void (*gfx_clear)(int); //color
     void (*gfx_drawLine)(int, int, int, int, int, int); //x1, y1, x2, y2, width, color
-    void (*gfx_setPixel)(int, int, int) //x, y, color 
+    void (*gfx_setPixel)(int, int, int); //x, y, color 
 
     int (*printf)(const char *__format, ...);
 } ApiTable;
