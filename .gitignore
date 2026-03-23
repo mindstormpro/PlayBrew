@@ -1,8 +1,9 @@
+# Playdate firmware files for testing
 pdfw-?
 boot-?
-patcher.bin
-patcher.elf
 PlaydateOS.zip
 PlaydateOS.pdos
 PlaydateOS.pdkey
 pdkeys.txt
+patcher.bin
+patcher.elf
