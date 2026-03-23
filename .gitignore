@@ -1,7 +1,12 @@
+# Playdate firmware files for testing
 pdfw-?
 boot-?
-patcher.bin
-patcher.elf
 PlaydateOS.zip
-PlaydateOS.pdos
-PlaydateOS.pdkey
+*.pdos
+*.pdkey
+
+# Build files
+build/*
+
+# macOS config files
+.DS_Store
