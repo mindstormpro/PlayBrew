@@ -46,9 +46,9 @@ static void playbrew_loader_load(void) {
 	void (*entry)(PlayBrewAPI *) = (void (*)(PlayBrewAPI *))((unsigned int)(payloadStart + entryPoint) | 1);
 	api.sd_close(fh);
 
-	api.printf("running the payload!")
+	api.printf("running the payload!");
 	entry(&api);
-	api.printf("payload execution finished!")
+	api.printf("payload execution finished!");
 }
 
 void playbrew_loader_start(void) __attribute__((naked));
