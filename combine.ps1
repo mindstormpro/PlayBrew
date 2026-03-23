@@ -1,0 +1,6 @@
+$fw = [System.IO.File]::ReadAllBytes("pdfw-b")
+$patch = [System.IO.File]::ReadAllBytes("patcher.bin")
+$combined = New-Object byte[] ($fw.Length + $patch.Length)
+$fw.CopyTo($combined, 0)
+$patch.CopyTo($combined, $fw.Length)
+[System.IO.File]::WriteAllBytes("firmware_patched.bin", $combined)

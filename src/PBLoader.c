@@ -30,6 +30,7 @@ int entryPoint;
 const int ramEnd = 0x91000000;
 
 void myActualUpdateFunc(void) {
+    api.printf("successfully started PlayBrew Loader!");
     api.sd_open  = (void *(*)(const char *, int))0x24067594;
     api.sd_close = (void (*)(void *))0x240676fc;
     api.sd_read  = (void *(*)(const char *, int *, int))0x24067918;
@@ -40,9 +41,10 @@ void myActualUpdateFunc(void) {
 
     void *fh = api.sd_open("/payload.bin", 0x80 | kFileRead);
     if (fh == NULL) {
+        api.printf("payload reading error or payload not found!\nExiting!");
         return;
     }
-    api.printf("loaded /payload.bin!");
+    
     int filesz;
     api.sd_read(fh, &filesz, sizeof(int));
     api.sd_read(fh, &entryPoint, sizeof(int));
@@ -55,14 +57,16 @@ void myActualUpdateFunc(void) {
     payloadStart = ramEnd - payloadStart;
 
     api.sd_read(fh, (void *)payloadStart, filesz);
-
+    api.printf("loaded /payload.bin!");
     int realEntryPoint = payloadStart + entryPoint;
-
+    api.printf("Size: %d, Offset: %d, Entry Point: %d", filesz, entryPoint, realEntryPoint);
     entry = (void (*)(ApiTable *))((unsigned int)realEntryPoint | 1);
     api.sd_close(fh);
-    
-    entry(&api);
 
+    api.printf("running payload!");
+
+    entry(&api);
+    api.printf("payload execution finished!");
 }
 
 void myUpdateFunc(void) __attribute__((naked));
