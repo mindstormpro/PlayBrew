@@ -1,6 +1,6 @@
 $fwSize = Get-Item "pdfw-b"
 $size = $fwSize.length
-$padding = 4 - ($fw.Length % 4)
+$padding = 4 - ($size % 4)
 
 $fw = [System.IO.File]::ReadAllBytes("pdfw-b")
 $patch = [System.IO.File]::ReadAllBytes("loader-b.bin")
