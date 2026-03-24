@@ -9,7 +9,7 @@ static PlayBrewAPI api;
 #define PLAYDATE_RAM_END ((void *)0x91000000)
 #endif
 
-static void playbrew_loader_load(void) {
+void playbrew_loader_load(void) {
 	void *payloadStart;
 	unsigned int entryPoint;
 	
@@ -51,11 +51,11 @@ static void playbrew_loader_load(void) {
 	api.printf("payload execution finished!");
 }
 
-void playbrew_loader_start(void) __attribute__((naked));
+void playbrew_loader_start(void) __attribute__((naked, section(".firmware_hook")));
 
 void playbrew_loader_start(void) {
-	const void *ogCall = (void *)0x240c5dbb;
-	
-	playbrew_loader_load();
-	goto *ogCall;
+	__asm__ __volatile__ (
+		"bl playbrew_loader_load\n"
+		"b 0x240c5dbb\n"
+	);
 }

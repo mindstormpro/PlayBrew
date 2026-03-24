@@ -1,6 +1,10 @@
 GROUP(libgcc.a libc.a libm.a)
 
 SECTIONS {
+	.firmware_hook : {
+		*(.firmware_hook)
+	}
+	
 	.text : {
 		*(.text)
 		
