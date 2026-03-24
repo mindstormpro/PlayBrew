@@ -56,6 +56,8 @@ void playbrew_loader_start(void) __attribute__((naked, section(".firmware_hook")
 void playbrew_loader_start(void) {
 	__asm__ __volatile__ (
 		"bl playbrew_loader_load\n"
-		"b 0x240c5dbb\n"
+		"mov.w r3, #0x5dbb\n"
+		"movt r3, #0x240c\n"
+		"bx r3\n"
 	);
 }
