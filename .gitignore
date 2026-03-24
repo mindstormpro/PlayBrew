@@ -8,3 +8,6 @@ pdkeys.txt
 patcher.bin
 patcher.elf
 /build
+loader-?.bin
+loaderRev?
+firmware_patched.bin
