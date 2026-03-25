@@ -1,7 +1,5 @@
 #include "playbrew.h"
 
-static PlayBrewAPI api;
-
 #ifdef TARGET_DVT1
 #define PLAYDATE_RAM_END ((void *)0x61000000)
 #endif
@@ -12,6 +10,8 @@ static PlayBrewAPI api;
 void playbrew_loader_load(void) {
 	void *payloadStart;
 	unsigned int entryPoint;
+	
+	PlayBrewAPI api;
 	
 	api.sd_open = (void *(*)(const char *, int))0x24067594;
 	api.sd_close = (void (*)(void *))0x240676fc;

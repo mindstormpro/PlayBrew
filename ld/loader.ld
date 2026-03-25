@@ -18,11 +18,4 @@ SECTIONS {
 		. = ALIGN(4);
 		*(.data*)
 	}
-	
-	.bss : {
-		. = ALIGN(4);
-		*(.bss*)
-		*(COMMON)
-		. = ALIGN(4);
-	}
 }
