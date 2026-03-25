@@ -11,7 +11,7 @@ with open("build/loader-b.bin", "rb") as f:
 	fw += f.read()
 
 fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
-fw_header[16:] = md5(fw).digest()[:16]
+fw_header[24:] = md5(fw).digest()[:8]
 
 with open("build/firmware_patched.bin", "wb") as f:
 	f.write(fw_header)
