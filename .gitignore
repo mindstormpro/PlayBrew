@@ -7,7 +7,7 @@ PlaydateOS.zip
 pdkeys.txt
 
 # Build files
+src/loader/start.inc
 patcher.bin
-patcher.elf
 build/*
 firmware_patched.bin
