@@ -1,3 +1,6 @@
+#ifndef PLAYBREW_H
+#define PLAYBREW_H
+
 #include <stddef.h>
 
 typedef struct {
@@ -10,3 +13,4 @@ typedef struct {
 	void (*gfx_setPixel)(int x, int y, int color);
 } PlayBrewAPI;
 
+#endif

@@ -45,19 +45,10 @@ void playbrew_loader_load(void) {
 	
 	void (*entry)(PlayBrewAPI *) = (void (*)(PlayBrewAPI *))((unsigned int)(payloadStart + entryPoint) | 1);
 	api.sd_close(fh);
-
+	
 	api.printf("running the payload!");
 	entry(&api);
 	api.printf("payload execution finished!");
 }
 
-void playbrew_loader_start(void) __attribute__((naked, section(".firmware_hook")));
-
-void playbrew_loader_start(void) {
-	__asm__ __volatile__ ( //240c5db2
-		"bl playbrew_loader_load\n"
-		"mov.w r3, #0x5db3\n"
-		"movt r3, #0x240c\n"
-		"bx r3\n"
-	);
-}
+#include "start.inc"
