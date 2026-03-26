@@ -21,12 +21,12 @@ void playbrew_loader_load(void) {
 	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))0x24055be5;
 	api.gfx_setPixel = (void (*)(int, int, int))0x24055901;
 	
-	api.printf("started PlayBrew!");
+	api.printf("started PlayBrew!\n");
 	
 	void *fh = api.sd_open("/payload.bin", 0x83);
 	
 	if (fh == NULL) {
-		api.printf("could not open /payload.bin!");
+		api.printf("could not open /payload.bin!\nReturning!\n");
 		return;
 	}
 	
@@ -46,9 +46,9 @@ void playbrew_loader_load(void) {
 	void (*entry)(PlayBrewAPI *) = (void (*)(PlayBrewAPI *))((unsigned int)(payloadStart + entryPoint) | 1);
 	api.sd_close(fh);
 	
-	api.printf("running the payload!");
+	api.printf("running the payload!\n");
 	entry(&api);
-	api.printf("payload execution finished!");
+	api.printf("payload execution finished!\n");
 }
 
 #include "start.inc"
