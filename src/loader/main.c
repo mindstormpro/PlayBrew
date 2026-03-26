@@ -13,11 +13,11 @@ void playbrew_loader_load(void) {
 	
 	PlayBrewAPI api;
 	
-	api.sd_open = (void *(*)(const char *, int))0x24067595;
-	api.sd_close = (void (*)(void *))0x240676fc;
+	api.sd_open = (void *(*)(const char *, int))0x24067594;
+	api.sd_close = (void (*)(void *))0x240676fd;
 	api.sd_read = (int (*)(void *, void *, size_t))0x24067919;
 	api.printf = (void (*)(const char *, ...))0x240baf51;
-	api.gfx_clear = (void (*)(int))0x24055d5c;
+	api.gfx_clear = (void (*)(int))0x24055d5d;
 	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))0x24055be5;
 	api.gfx_setPixel = (void (*)(int, int, int))0x24055901;
 	
