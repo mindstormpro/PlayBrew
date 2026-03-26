@@ -1,18 +1,40 @@
 from hashlib import md5
 
-with open("pdfw-b", "rb") as f:
-	fw_header = bytearray(f.read(32))
-	fw = f.read()
+print("Enter target system\nA for Rev. A, B for rev. B, or AB for both\n")
+target = input("|)> ")
 
-while bool(len(fw) & 3):
-	fw += b"\x00"
+if target == "A" or target == "AB":
+	with open("pdfw-a", "rb") as f:
+		fw_header = bytearray(f.read(32))
+		fw = f.read()
 
-with open("build/loader-b.bin", "rb") as f:
-	fw += f.read()
+	while bool(len(fw) & 3):
+		fw += b"\x00"
 
-fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
-fw_header[24:] = md5(fw).digest()[:8]
+	with open("build/loader-a.bin", "rb") as f:
+		fw += f.read()
 
-with open("build/firmware_patched.bin", "wb") as f:
-	f.write(fw_header)
-	f.write(fw)
+	fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
+	fw_header[24:] = md5(fw).digest()[:8]
+
+	with open("build/pdfw-a-patched.bin", "wb") as f:
+		f.write(fw_header)
+		f.write(fw)
+
+if target == "B" or target == "AB":
+	with open("pdfw-b", "rb") as f:
+		fw_header = bytearray(f.read(32))
+		fw = f.read()
+
+	while bool(len(fw) & 3):
+		fw += b"\x00"
+
+	with open("build/loader-b.bin", "rb") as f:
+		fw += f.read()
+
+	fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
+	fw_header[24:] = md5(fw).digest()[:8]
+
+	with open("build/pdfw-b-patched.bin", "wb") as f:
+		f.write(fw_header)
+		f.write(fw)
