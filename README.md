@@ -10,12 +10,13 @@ Homebrew loader for the Playdate! (https://play.date)
 
 # Supported Versions Of Playdate OS
 
-| Version | Still Signed? | Compatible? |
-| :----: | :----: | :----: |
-| 3.0.4 | Yes | Not Yet |
-| 3.0.2 | No | Yes |
-| < 3.0.2 | N/A* | Never |
+| Version | Still Signed? | Comp. Rev. A? | Comp Rev. B? |
+| :----: | :----: | :----: | :----: |
+| 3.0.4 | Yes | Not Yet | Not Yet |
+| 3.0.2 | No | Not Yet | Yes |
+| < 3.0.2 | N/A* | Never** | Never** |
 
 *Some versions are still signed, but majority are not  
+**It is now not possible to aquire firmware dumps of those versions, so we cannot develop firmware for them  
 
 @scratchminer helped SOO much for this project I cannot thank him enough!
