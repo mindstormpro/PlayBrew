@@ -13,7 +13,7 @@ typedef struct {
 	void (*gfx_setPixel)(int x, int y, int color);
 } PlayBrewAPI;
 
-#define ADDR_SD_OPEN ((void *(*)(const char *, int))0x24067594)
+#define ADDR_SD_OPEN ((void *(*)(const char *, int))0x24067595)
 #define ADDR_SD_CLOSE ((void (*)(void *))0x240676fd)
 #define ADDR_SD_READ ((int (*)(void *, void *, size_t))0x24067919)
 #define ADDR_PRINTF ((void (*)(const char *, ...))0x240baf51)
