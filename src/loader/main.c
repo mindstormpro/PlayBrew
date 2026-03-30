@@ -1,4 +1,5 @@
-#include "playbrew.h"
+#include "3.0.2.h"
+
 
 #ifdef TARGET_DVT1
 #define PLAYDATE_RAM_END ((void *)0x61000000)
@@ -13,16 +14,17 @@ void playbrew_loader_load(void) {
 	
 	PlayBrewAPI api;
 	
-	api.sd_open = (void *(*)(const char *, int))0x24067594;
-	api.sd_close = (void (*)(void *))0x240676fd;
-	api.sd_read = (int (*)(void *, void *, size_t))0x24067919;
-	api.printf = (void (*)(const char *, ...))0x240baf51;
-	api.gfx_clear = (void (*)(int))0x24055d5d;
-	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))0x24055be5;
-	api.gfx_setPixel = (void (*)(int, int, int))0x24055901;
+	api.sd_open = (void *(*)(const char *, int))ADDR_SD_OPEN;
+	api.sd_close = (void (*)(void *))ADDR_SD_CLOSE;
+	api.sd_read = (int (*)(void *, void *, size_t))ADDR_SD_READ;
+	api.printf = (void (*)(const char *, ...))ADDR_PRINTF;
+	api.gfx_clear = (void (*)(int))ADDR_GFX_CLEAR;
+	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))ADDR_GFX_DRAWLINE;
+	api.gfx_setPixel = (void (*)(int, int, int))ADDR_GFX_SETPIXEL;
 	
 	api.printf("started PlayBrew!\n");
-	
+	volatile int i;
+	for (i = 0; i < 10000000; i++); 
 	void *fh = api.sd_open("/payload.bin", 0x83);
 	
 	if (fh == NULL) {
