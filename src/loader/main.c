@@ -23,8 +23,8 @@ void playbrew_loader_load(void) {
 	api.gfx_setPixel = (void (*)(int, int, int))ADDR_GFX_SETPIXEL;
 	
 	api.printf("started PlayBrew!\n");
-	volatile int i;
-	for (i = 0; i < 10000000; i++); 
+	
+	
 	void *fh = api.sd_open("/payload.bin", 0x83);
 	
 	if (fh == NULL) {
