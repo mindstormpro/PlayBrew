@@ -3,10 +3,11 @@ Homebrew loader for the Playdate! (https://play.date)
 
 # Todo:  
 * add extra functions
-	* screen drawing access
-	* input access  
+	* screen drawing access -- In Progress
+	* input access
 	* more filesystem access
 * make installer via system api buffer overflow
+* add hook inside of loadPDX function to allow adding a custom menu item to open playbrew -- in Progress
 
 # Supported Versions Of Playdate OS
 
