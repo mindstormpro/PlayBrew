@@ -7,10 +7,14 @@ void playbrew_loader_start(void) __attribute__((naked, section(".firmware_hook")
 
 void playbrew_loader_start(void) {{
 	__asm__ __volatile__ (
+		"nop\\n"
+		"nop\\n"
 		"bl playbrew_loader_load\\n"
 		"mov.w r3, #{hex(ADDRESS & 0xffff)}\\n"
 		"movt r3, #{hex(ADDRESS >> 16)}\\n"
 		"bx r3\\n"
+		"nop\\n"
+		"nop\\n"
 	);
 }}
 '''
