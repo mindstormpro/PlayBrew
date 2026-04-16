@@ -44,7 +44,8 @@ if "B" in target.upper():
 	
 	with open("build/loader-b.bin", "rb") as f:
 		fw += f.read()
-	
+		
+	fw = bytearray(fw)
 	struct.pack_into("<I", fw, ptr_addr, updateFuncAddrB)
 
 	fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
