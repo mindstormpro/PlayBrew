@@ -11,3 +11,4 @@ src/loader/start.inc
 patcher.bin
 build/*
 firmware_patched.bin
+test.lua

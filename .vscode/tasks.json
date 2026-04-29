@@ -1,0 +1,49 @@
+// Build tasks - documentation can be found at: https://code.visualstudio.com/docs/editor/tasks
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // Use "pdc" command to build Playdate project into .pdx
+            "label": "Playdate: Build",
+            "type": "pdc",
+            // Look for build problems that match a specific format and output it to the "problems" window
+            "problemMatcher": ["$pdc-lua", "$pdc-external"],
+            "presentation": {
+                // Switch to problems tab on error
+                "revealProblems": "onProblem",
+                // Share same terminal window as other tasks
+                "panel": "shared",
+                // Don't show "Terminal will be reused by tasks, press any key to close it" message
+                "showReuseMessage": false
+            }
+        },
+        {
+            // Opens the Playdate Simulator with our project .pdx
+            "label": "Playdate: Run",
+            "type": "playdate-simulator",
+            // Look for build problems that match a specific format and output it to the "problems" window
+            "problemMatcher": ["$pdc-external"],
+            // Close any existing simulator windows before launching a new one
+            "kill": true,
+            "presentation": {
+                // Switch to problems tab on error
+                "revealProblems": "onProblem",
+                // Share same terminal window as other tasks
+                "panel": "shared",
+                // Don't show "Terminal will be reused by tasks, press any key to close it" message
+                "showReuseMessage": false
+            }
+        },
+        {
+            // Build and then launch the Playdate Simulator with our newly build .pdx
+            "label": "Playdate: Build and Run",
+            "dependsOn": ["Playdate: Build", "Playdate: Run"],
+            "dependsOrder": "sequence",
+            // Set as our default built task under Terminal->Run Build Task, or with ctrl/cmd+shift+B
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            }
+        }
+    ]
+}

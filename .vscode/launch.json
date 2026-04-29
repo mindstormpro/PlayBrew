@@ -1,0 +1,12 @@
+// Specifies that the debugger launch task should use the Playdate Debug extension
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "playdate",
+            "request": "launch",
+            "name": "Playdate: Debug",
+            "preLaunchTask": "${defaultBuildTask}"
+        }
+    ]
+}
