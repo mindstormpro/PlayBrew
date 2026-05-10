@@ -57,17 +57,6 @@ def pad_firmware_body(fw):
 	return fw
 
 
-def patch_rev_a():
-	fw_header, fw = read_firmware_image("pdfw-a")
-	fw = pad_firmware_body(fw)
-	fw += read_loader_binary("build/loader-a.bin")
-	finalize_firmware_header(fw_header, fw)
-
-	with open("build/pdfw-a-patched", "wb") as f:
-		f.write(fw_header)
-		f.write(fw)
-
-
 def patch_rev_b():
 	addresses = get_firmware_addresses(version=DEFAULT_VERSION, revision="B")
 	try:
@@ -90,14 +79,13 @@ def patch_rev_b():
 
 
 def main():
-	print("Enter target system: A for Rev. A, B for Rev. B, or AB for both")
-	target = input("|)> ")
+	print("Enter target system: B for Rev. B")
+	target = input("|)> ").upper()
 
-	#TODO: add ptr patching to REV. A once i figure out how to develop cfw for it
-	if "A" in target.upper():
-		patch_rev_a()
+	if "A" in target:
+		raise SystemExit("Error: Rev A patching is not implemented yet.")
 
-	if "B" in target.upper():
+	if "B" in target:
 		patch_rev_b()
 
 
