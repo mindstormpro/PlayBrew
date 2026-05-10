@@ -40,6 +40,7 @@ set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -x assembler-with-cpp -D__HEAP_SIZE=${HE
 
 set(MCFLAGS -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -D__FPU_USED=1)
 set(CFLAGS ${MCFLAGS} -Wall -Wextra -falign-functions=16 -fomit-frame-pointer -fno-common -O2)
+set(PAYLOAD_CFLAGS ${CFLAGS} -ffreestanding -fno-builtin -fdata-sections -ffunction-sections)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(GENERATED_LOADER_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated/loader)
@@ -99,3 +100,45 @@ set_property(
 	PROPERTY ADDITIONAL_CLEAN_FILES
 	loader-b.bin
 )
+
+# Example payloads
+
+function(add_playbrew_payload name source)
+	set(target "payload_${name}")
+	set(output_name "${name}-payload")
+	set(raw_output "${CMAKE_CURRENT_BINARY_DIR}/${output_name}.raw")
+	set(payload_output "${CMAKE_CURRENT_BINARY_DIR}/${output_name}.bin")
+
+	add_executable(${target} ${source})
+	target_include_directories(${target} PUBLIC include)
+	target_compile_options(${target} PRIVATE ${PAYLOAD_CFLAGS})
+	target_link_options(${target} PUBLIC ${MCFLAGS})
+	target_link_options(${target} PUBLIC -T${CMAKE_CURRENT_SOURCE_DIR}/ld/payload.ld -nostartfiles --entry playbrew_payload_entry)
+	target_link_options(${target} PUBLIC "-Wl,--gc-sections,--no-warn-mismatch")
+	set_target_properties(
+		${target}
+		PROPERTIES
+		OUTPUT_NAME ${output_name}
+		POSITION_INDEPENDENT_CODE OFF
+		SUFFIX ".elf"
+	)
+
+	add_custom_command(
+		TARGET ${target} POST_BUILD
+		COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${target}> ${raw_output}
+		COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tools/package_payload.py
+			--input ${raw_output}
+			--output ${payload_output}
+			--entry-offset 0
+		BYPRODUCTS ${raw_output} ${payload_output}
+		VERBATIM
+	)
+
+	set_property(
+		TARGET ${target}
+		PROPERTY ADDITIONAL_CLEAN_FILES
+		"${raw_output};${payload_output}"
+	)
+endfunction()
+
+add_playbrew_payload(hello src/payloads/hello.c)

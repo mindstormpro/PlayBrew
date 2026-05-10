@@ -28,8 +28,9 @@ patching hook is not complete yet.
 
 * Do not use this on firmware versions that are not listed as supported.
 * Keep original firmware dumps backed up.
-* The GitHub release artifacts contain raw loader binaries only. They do not
-  contain Playdate firmware dumps or patched firmware images.
+* The GitHub release artifacts contain raw loader binaries and an example
+  payload binary only. They do not contain Playdate firmware dumps or patched
+  firmware images.
 * `combine.py` expects local firmware dumps and writes patched firmware files
   under `build/`.
 
@@ -38,9 +39,12 @@ patching hook is not complete yet.
 | Path | Purpose |
 | :-- | :-- |
 | `src/loader/main.c` | Loader entry code that opens and runs `/payload.bin` |
+| `src/payloads/hello.c` | Minimal example payload that can be packaged as `/payload.bin` |
 | `include/3.0.2.h` | Playdate OS 3.0.2 firmware function addresses and payload API |
 | `ld/loader.ld` | Linker script for raw loader binaries |
+| `ld/payload.ld` | Linker script for payload binaries loaded at runtime |
 | `generate_start.py` | Generates `src/loader/start.inc`, the startup hook included by `main.c` |
+| `tools/package_payload.py` | Adds the PlayBrew payload header to a raw payload binary |
 | `combine.py` | Appends loader binaries to local firmware dumps and updates firmware headers |
 | `.github/workflows/release.yml` | CI build and draft-release workflow |
 
@@ -78,6 +82,9 @@ Expected outputs:
 ```text
 build/loader-a.bin
 build/loader-b.bin
+build/hello-payload.elf
+build/hello-payload.raw
+build/hello-payload.bin
 ```
 
 `src/loader/start.inc` is generated and ignored. If you change
@@ -96,10 +103,10 @@ The workflow:
 
 1. Checks out the repository.
 2. Installs the ARM embedded toolchain.
-3. Runs `python3 generate_start.py`.
+3. Runs the Python unit tests.
 4. Configures and builds the CMake project with Ninja.
-5. Packages `loader-a.bin`, `loader-b.bin`, `README.md`, `LICENSE`, and
-   `SHA256SUMS`.
+5. Packages `loader-a.bin`, `loader-b.bin`, `hello-payload.bin`, `README.md`,
+   `LICENSE`, and `SHA256SUMS`.
 6. Uploads the package as a workflow artifact.
 
 ## Releases
@@ -117,7 +124,8 @@ The workflow creates a draft GitHub Release with:
 * `SHA256SUMS`
 
 The release is draft by default so the attached files and notes can be reviewed
-before publication.
+before publication. `hello-payload.bin` is an example payload to test the loader
+path; it is not required for custom payloads.
 
 You can also run the workflow manually and set `create_release` to `true`. For
 manual releases, provide a release tag such as `v0.1.0`.
@@ -179,6 +187,57 @@ void entry(PlayBrewAPI *api);
 * `gfx_setPixel`
 
 The entry offset is added to the payload base address and called as Thumb code.
+The offset must be even and must leave at least one 16-bit Thumb instruction in
+the payload body.
+
+## Build Example Payload
+
+The default CMake build also creates a tiny example payload:
+
+```sh
+cmake -S . -B build
+cmake --build build --target payload_hello
+```
+
+Expected outputs:
+
+```text
+build/hello-payload.elf
+build/hello-payload.raw
+build/hello-payload.bin
+```
+
+Put `hello-payload.bin` on the Playdate filesystem as `/payload.bin` when you
+want a simple loader smoke test.
+
+The example entry point is:
+
+```c
+void playbrew_payload_entry(PlayBrewAPI *api);
+```
+
+`ld/payload.ld` places `.playbrew.entry` at offset `0`, so the packaged example
+uses entry offset `0`.
+
+## Package Custom Payloads
+
+For custom payloads, build a raw ARM Thumb payload binary and then package it
+with the PlayBrew header:
+
+```sh
+python3 tools/package_payload.py \
+  --input build/my-payload.raw \
+  --output build/my-payload.bin \
+  --entry-offset 0
+```
+
+The packager validates the same basic rules as the loader:
+
+* the body cannot be empty
+* the body cannot exceed 8 MiB
+* the entry offset must be inside the body
+* the entry offset must be even
+* the entry offset must leave room for at least one Thumb instruction
 
 ## Troubleshooting
 
@@ -203,15 +262,24 @@ script expects.
 
 ### Release workflow does not include patched firmware
 
-That is intentional. The workflow only builds loader binaries from public source
-files. Patched firmware depends on local firmware dumps and must be produced
-locally.
+That is intentional. The workflow only builds loader binaries and an example
+payload from public source files. Patched firmware depends on local firmware
+dumps and must be produced locally.
+
+### Loader prints a `payload:` read error
+
+Build the payload with `tools/package_payload.py` or the CMake payload target
+first. Hand-built files often fail because the first 8 bytes do not match the
+documented header, the entry offset points outside the body, or the body is
+shorter than the size written in the header.
 
 ## Development Notes
 
 Keep changes split by risk area:
 
 * loader runtime behavior in `src/loader/main.c`
+* payload examples in `src/payloads/`
+* payload packaging logic in `tools/package_payload.py`
 * firmware address data in version-specific headers
 * firmware packaging logic in `combine.py`
 * startup hook generation in `generate_start.py`
@@ -228,7 +296,8 @@ cmake --build build
 If you change Python scripts, also run:
 
 ```sh
-python3 -m py_compile combine.py generate_start.py
+python3 -m py_compile combine.py generate_start.py tools/package_payload.py
+python3 -m unittest discover -s tests
 ```
 
 ## Credits
