@@ -14,10 +14,10 @@ void playbrew_loader_start(void) {{
 	__asm__ __volatile__ (
 		"nop\\n"
 		"nop\\n"
+		"push {{r0, r1, r2, r3, r12, lr}}\\n"
 		"bl playbrew_loader_load\\n"
-		"mov.w r3, #{hex(ADDRESS & 0xffff)}\\n"
-		"movt r3, #{hex(ADDRESS >> 16)}\\n"
-		"bx r3\\n"
+		"pop {{r0, r1, r2, r3, r12, lr}}\\n"
+		"ldr.w pc, ={hex(ADDRESS)}\\n"
 		"nop\\n"
 		"nop\\n"
 	);
