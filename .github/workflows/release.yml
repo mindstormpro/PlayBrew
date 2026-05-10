@@ -1,0 +1,92 @@
+name: Build and Release
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: "Create a GitHub release from this workflow run"
+        required: true
+        default: false
+        type: boolean
+      release_tag:
+        description: "Release tag to use for manual releases, for example v0.1.0"
+        required: false
+        default: "v0.0.0"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build loader binaries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install ARM toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            binutils-arm-none-eabi \
+            cmake \
+            gcc-arm-none-eabi \
+            libnewlib-arm-none-eabi \
+            ninja-build \
+            python3
+
+      - name: Generate startup include
+        run: python3 generate_start.py
+
+      - name: Set artifact names
+        id: artifact
+        shell: bash
+        run: |
+          safe_ref="${GITHUB_REF_NAME//\//-}"
+          echo "archive=playbrew-loader-${safe_ref}.tar.gz" >> "$GITHUB_OUTPUT"
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Package artifacts
+        shell: bash
+        run: |
+          mkdir -p dist/playbrew-loader
+          cp build/loader-a.bin dist/playbrew-loader/
+          cp build/loader-b.bin dist/playbrew-loader/
+          cp README.md LICENSE dist/playbrew-loader/
+          (cd dist/playbrew-loader && sha256sum loader-a.bin loader-b.bin > SHA256SUMS)
+          tar -C dist -czf "${{ steps.artifact.outputs.archive }}" playbrew-loader
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: playbrew-loader
+          path: |
+            ${{ steps.artifact.outputs.archive }}
+            dist/playbrew-loader/SHA256SUMS
+
+      - name: Create release
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.create_release == true)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || inputs.release_tag }}
+          ARCHIVE_NAME: ${{ steps.artifact.outputs.archive }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            "$ARCHIVE_NAME" \
+            dist/playbrew-loader/SHA256SUMS \
+            --draft \
+            --title "PlayBrew Loader ${RELEASE_TAG}" \
+            --notes "Draft release containing raw PlayBrew loader binaries. This release does not include patched firmware or Playdate firmware dumps."
