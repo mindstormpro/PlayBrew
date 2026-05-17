@@ -22,22 +22,16 @@ void playbrew_loader_load(void) {
 	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))ADDR_GFX_DRAWLINE;
 	api.gfx_setPixel = (void (*)(int, int, int))ADDR_GFX_SETPIXEL;
 	
-	api.printf("started PlayBrew! ");
+	void *fh = api.sd_open("/playbrew/payload.bin", 0x83);
 
-	void *log = api.sd_open("/PBLogs.txt", 0x88);
-	api.sd_close(log);
-
-	void *fh = api.sd_open("/payload.bin", 0x83);
-	
 	if (fh == NULL) {
-		api.printf("could not open /payload.bin! Returning! ");
+		api.printf("could not open /playbrew/payload.bin! Returning! ");
 		return;
 	}
-	
+
 	unsigned int filesz;
 	api.sd_read(fh, &filesz, sizeof(unsigned int));
 	api.sd_read(fh, &entryPoint, sizeof(unsigned int));
-	
 	if (filesz % 4 != 0) {
 		payloadStart = PLAYDATE_RAM_END - (filesz + 4 - (filesz % 4));
 	}
@@ -48,10 +42,16 @@ void playbrew_loader_load(void) {
 	api.sd_read(fh, (void *)payloadStart, filesz);
 	
 	void (*entry)(PlayBrewAPI *) = (void (*)(PlayBrewAPI *))((unsigned int)(payloadStart + entryPoint) | 1);
+
+	entry(&api);
+
+	api.printf("started PlayBrew! ");
+	
+	
 	api.sd_close(fh);
 	
 	api.printf("running the payload! ");
-	entry(&api);
+	
 	api.printf(" payload execution finished!");
 }
 
