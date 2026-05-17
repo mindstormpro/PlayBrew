@@ -14,24 +14,24 @@ void playbrew_loader_load(void) {
 	
 	PlayBrewAPI api;
 	
-	api.sd_open = (void *(*)(const char *, int))ADDR_SD_OPEN;
-	api.sd_close = (void (*)(void *))ADDR_SD_CLOSE;
-	api.sd_read = (int (*)(void *, void *, size_t))ADDR_SD_READ;
+	api.fopen = (void *(*)(const char *, const char *))ADDR_FOPEN;
+	api.fclose = (int (*)(void *))ADDR_FCLOSE;
+	api.fread = (size_t (*)(void *, size_t , size_t , void *))ADDR_FREAD;
 	api.printf = (void (*)(const char *, ...))ADDR_PRINTF;
 	api.gfx_clear = (void (*)(int))ADDR_GFX_CLEAR;
 	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))ADDR_GFX_DRAWLINE;
 	api.gfx_setPixel = (void (*)(int, int, int))ADDR_GFX_SETPIXEL;
-	
-	void *fh = api.sd_open("/playbrew/payload.bin", 0x83);
+	api.printf("  started PlayBrew!  ");
+	void *fh = api.fopen("/playbrew/payload.bin", "rb");
 
 	if (fh == NULL) {
-		api.printf("could not open /playbrew/payload.bin! Returning! ");
+		api.printf("   could not open /playbrew/payload.bin! Returning!   ");
 		return;
 	}
 
 	unsigned int filesz;
-	api.sd_read(fh, &filesz, sizeof(unsigned int));
-	api.sd_read(fh, &entryPoint, sizeof(unsigned int));
+	api.fread(&filesz, sizeof(unsigned int), 1, fh);
+	api.fread(&entryPoint, sizeof(unsigned int), 1, fh);
 	if (filesz % 4 != 0) {
 		payloadStart = PLAYDATE_RAM_END - (filesz + 4 - (filesz % 4));
 	}
@@ -39,20 +39,19 @@ void playbrew_loader_load(void) {
 		payloadStart = PLAYDATE_RAM_END - filesz;
 	}
 	
-	api.sd_read(fh, (void *)payloadStart, filesz);
-	
-	void (*entry)(PlayBrewAPI *) = (void (*)(PlayBrewAPI *))((unsigned int)(payloadStart + entryPoint) | 1);
+	api.fread((void *)payloadStart, filesz, 1, fh);
+	api.fclose(fh);
+	api.printf("  Finished all reading and closed the payload!  ");
 
+	api.printf("  running the payload!  ");
+
+	void (*entry)(PlayBrewAPI *) = (void (*)(PlayBrewAPI *))((unsigned int)(payloadStart + entryPoint) | 1);
 	entry(&api);
 
-	api.printf("started PlayBrew! ");
+	api.printf("  payload execution finished!  ");
 	
 	
-	api.sd_close(fh);
 	
-	api.printf("running the payload! ");
-	
-	api.printf(" payload execution finished!");
 }
 
 #include "start.inc"
