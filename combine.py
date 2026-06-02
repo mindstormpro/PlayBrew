@@ -1,7 +1,7 @@
 from hashlib import md5
 import struct
 
-updateFuncAddrB = 0x240EC745
+from firmware_addresses import DEFAULT_VERSION, FirmwareAddressError, get_firmware_addresses
 
 print("Enter target system: A for Rev. A, B for Rev. B, or AB for both")
 target = input("|)> ")
@@ -30,9 +30,12 @@ if "A" in target.upper():
 		f.write(fw)
 
 if "B" in target.upper():
-
-	ptr_addr = 0x2400ee8c - 0x24000000
-	
+	addresses = get_firmware_addresses(version=DEFAULT_VERSION, revision="B")
+	try:
+		ptr_addr = addresses.require_patch_pointer_offset()
+		loader_entry_address = addresses.require_loader_entry_address()
+	except FirmwareAddressError as exc:
+		raise SystemExit(f"error: {exc}") from None
 
 	with open("pdfw-b", "rb") as f:
 		fw_header = bytearray(f.read(32))
@@ -46,7 +49,7 @@ if "B" in target.upper():
 		fw += f.read()
 		
 	fw = bytearray(fw)
-	struct.pack_into("<I", fw, ptr_addr, updateFuncAddrB)
+	struct.pack_into("<I", fw, ptr_addr, loader_entry_address)
 
 	fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
 	fw_header[24:] = md5(fw).digest()[:8]
@@ -54,4 +57,3 @@ if "B" in target.upper():
 	with open("build/pdfw-b-patched", "wb") as f:
 		f.write(fw_header)
 		f.write(fw)
-
