@@ -4,7 +4,6 @@ boot*
 PlaydateOS.zip
 *.pdos
 *.pdkey
-pdkeys.txt
 
 # Build files
 src/loader/start.inc
@@ -12,3 +11,7 @@ patcher.bin
 build/*
 firmware_patched.bin
 test.lua
+
+# other things
+pdkeys.txt
+NoDmcaViolationsHere/*

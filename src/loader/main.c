@@ -11,12 +11,13 @@
 void playbrew_loader_load(void) {
 	void *payloadStart;
 	unsigned int entryPoint;
-	
+
 	PlayBrewAPI api;
-	
-	api.fopen = (void *(*)(const char *, const char *))ADDR_FOPEN;
-	api.fclose = (int (*)(void *))ADDR_FCLOSE;
-	api.fread = (size_t (*)(void *, size_t , size_t , void *))ADDR_FREAD;
+	void *temp = ADDR_UCFS_CLOSE;
+
+	api.ucfs_open = (void *(*)(const char *, int))ADDR_UCFS_OPEN;
+	api.ucfs_close = (void (*)(void *))*temp;
+	api.ucfs_read = (int (*)(void *, void *, size_t))ADDR_UCFS_READ;
 	api.printf = (void (*)(const char *, ...))ADDR_PRINTF;
 	api.gfx_clear = (void (*)(int))ADDR_GFX_CLEAR;
 	api.gfx_drawLine = (void (*)(int, int, int, int, int, int))ADDR_GFX_DRAWLINE;
