@@ -3,6 +3,8 @@ Homebrew loader for the Playdate! (https://play.date)
 NOTE: REV A. Devices ARE NOT SUPPORTED AS OF NOW  
 please check to see your hardware revision using Rae's [Rev Checker](https://rae.wtf/revchecker/)
 
+Please note that installing homebrew or doing any firmware modification VOIDS YOUR WARANTY. INSTALL AT YOUR OWN RISK
+
 # Building PlayBrew Loader
 ## Windows
 ### Prerequisites
@@ -44,3 +46,5 @@ Then get your `pdfw-b-patched` from the build folder and install it by opening t
 * find a way to add a custom menu item to open PBL so you don't have to restart
 
 @scratchminer helped SOO much for this project I cannot thank him enough!
+
+Me nor anyone who helped the development with this project is affiliated nor indorsed with/by Panic Inc. 
