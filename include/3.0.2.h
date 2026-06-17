@@ -15,9 +15,9 @@ typedef struct {
 
 
 
-#define ADDR_UCFS_OPEN ((void *(**)(const char *, int))(0x2001778C + 0x14))
-#define ADDR_UCFS_CLOSE ((void (**)(void *))(0x2001778C + 0x18))
-#define ADDR_UCFS_READ ((int (*)(void *, void *, size_t))(0x2001778C + 0x1c))
+#define ADDR_UCFS_OPEN ((void *(**)(const char *, int))0x2405078f)
+#define ADDR_UCFS_CLOSE ((void (**)(void *))0x240507c5)
+#define ADDR_UCFS_READ ((int (*)(void *, void *, size_t))0x240507ef)
 #define ADDR_PRINTF ((void (*)(const char *, ...))0x240baf51)
 #define ADDR_GFX_CLEAR ((void (*)(int))0x24055d5d)
 #define ADDR_GFX_DRAWLINE ((void (*)(int, int, int, int, int, int))0x24055be5)
