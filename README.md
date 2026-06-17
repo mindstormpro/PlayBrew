@@ -33,6 +33,9 @@ Then get your `pdfw-b-patched` from the build folder and install it by opening t
 | < 3.0.2 | No | Never | Never | I don't have dumps so I cannot make a version for this |
 
 # Todo:  
+* MAKE FS USABLE!!!
+  * I need to figure out what is what in the UCFS table and then call those funcs with proper formatting instead of the sd_read or fread type stuff
+  * also need to save annotations in Ghidra more so I can understand wtf I'm actually looking at
 * add extra functions
 	* screen drawing access -- In Progress
 	* input access
