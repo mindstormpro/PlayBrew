@@ -32,6 +32,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 project(PlayBrew LANGUAGES C ASM)
 
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
 set(HEAP_SIZE 8388208)
 set(STACK_SIZE 61800)
 set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -x assembler-with-cpp -D__HEAP_SIZE=${HEAP_SIZE} -D__STACK_SIZE=${STACK_SIZE}")
@@ -40,10 +42,23 @@ set(MCFLAGS -mthumb -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-sp-d16 -D__FPU_U
 set(CFLAGS ${MCFLAGS} -Wall -Wextra -falign-functions=16 -fomit-frame-pointer -fno-common -O2)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+set(GENERATED_LOADER_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated/loader)
+set(GENERATED_LOADER_START_INC ${GENERATED_LOADER_INCLUDE_DIR}/start.inc)
+
+add_custom_command(
+	OUTPUT ${GENERATED_LOADER_START_INC}
+	COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_start.py ${GENERATED_LOADER_START_INC}
+	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/generate_start.py
+	VERBATIM
+)
+
+add_custom_target(generateLoaderStartInc DEPENDS ${GENERATED_LOADER_START_INC})
+
 # Rev. A loader
 
 add_executable(loaderRevA src/loader/main.c)
-target_include_directories(loaderRevA PUBLIC include)
+add_dependencies(loaderRevA generateLoaderStartInc)
+target_include_directories(loaderRevA PUBLIC include ${GENERATED_LOADER_INCLUDE_DIR})
 
 target_compile_options(loaderRevA PRIVATE ${CFLAGS} -DTARGET_DVT1=1)
 
@@ -65,7 +80,8 @@ set_property(
 # Rev. B loader
 
 add_executable(loaderRevB src/loader/main.c)
-target_include_directories(loaderRevB PUBLIC include)
+add_dependencies(loaderRevB generateLoaderStartInc)
+target_include_directories(loaderRevB PUBLIC include ${GENERATED_LOADER_INCLUDE_DIR})
 
 target_compile_options(loaderRevB PRIVATE ${CFLAGS} -DTARGET_H7D1=1)
 
