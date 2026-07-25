@@ -10,6 +10,9 @@
 
 unsigned char isAppSystem;
 
+void playbrew_elevator(void) __attribute__((section(".firmware_hook")));
+
+
 void playbrew_elevator(void) {
 	PlayBrewAPI api;
 
@@ -24,4 +27,3 @@ void playbrew_elevator(void) {
 
 }
 
-#include "start.inc"

@@ -1,7 +1,7 @@
 from hashlib import md5
 import struct
 
-updateFuncAddrB = 0x240EC745
+updateFuncAddrB = 0x98F0ACFB
 
 print("Enter target system: A for Rev. A, B for Rev. B, or AB for both")
 target = input("|)> ")
@@ -31,7 +31,7 @@ if "A" in target.upper():
 
 if "B" in target.upper():
 
-	ptr_addr = 0x2400ee8c - 0x24000000
+	ptr_addr = 0x24054004 - 0x24000000
 	
 
 	with open("pdfw-b", "rb") as f:

@@ -48,7 +48,7 @@ target_include_directories(loaderRevA PUBLIC include)
 target_compile_options(loaderRevA PRIVATE ${CFLAGS} -DTARGET_DVT1=1)
 
 target_link_options(loaderRevA PUBLIC ${MCFLAGS})
-target_link_options(loaderRevA PUBLIC -T${CMAKE_CURRENT_SOURCE_DIR}/ld/loader.ld -nostartfiles --entry playbrew_loader_start)
+target_link_options(loaderRevA PUBLIC -T${CMAKE_CURRENT_SOURCE_DIR}/ld/loader.ld -nostartfiles --entry playbrew_elevator)
 target_link_options(loaderRevA PUBLIC "-Wl,--gc-sections,--no-warn-mismatch")
 
 add_custom_command(
@@ -70,7 +70,7 @@ target_include_directories(loaderRevB PUBLIC include)
 target_compile_options(loaderRevB PRIVATE ${CFLAGS} -DTARGET_H7D1=1)
 
 target_link_options(loaderRevB PUBLIC ${MCFLAGS})
-target_link_options(loaderRevB PUBLIC -T${CMAKE_CURRENT_SOURCE_DIR}/ld/loader.ld -nostartfiles --entry playbrew_loader_start)
+target_link_options(loaderRevB PUBLIC -T${CMAKE_CURRENT_SOURCE_DIR}/ld/loader.ld -nostartfiles --entry playbrew_elevator)
 target_link_options(loaderRevB PUBLIC "-Wl,--gc-sections,--no-warn-mismatch")
 
 add_custom_command(
