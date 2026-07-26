@@ -1,7 +1,7 @@
 from hashlib import md5
 import struct
 
-updateFuncAddrB = 0x98F0ACFB
+updateFuncAddrB = 0xECF098FB
 
 print("Enter target system: A for Rev. A, B for Rev. B, or AB for both")
 target = input("|)> ")
