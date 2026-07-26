@@ -1,7 +1,7 @@
 from hashlib import md5
 import struct
 
-updateFuncAddrB = 0xECF098FB
+updateFuncAddrB = 0x98F0ACFB
 
 print("Enter target system: A for Rev. A, B for Rev. B, or AB for both")
 target = input("|)> ")
@@ -46,7 +46,7 @@ if "B" in target.upper():
 		fw += f.read()
 		
 	fw = bytearray(fw)
-	struct.pack_into("<I", fw, ptr_addr, updateFuncAddrB)
+	struct.pack_into(">I", fw, ptr_addr, updateFuncAddrB)
 
 	fw_header[8:12] = len(fw).to_bytes(4, byteorder="little")
 	fw_header[24:] = md5(fw).digest()[:8]
