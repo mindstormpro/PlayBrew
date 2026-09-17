@@ -48,3 +48,5 @@ Then get your `pdfw-b-patched` from the build folder and install it by opening t
 @scratchminer helped SOO much for this project I cannot thank him enough!
 
 Me nor anyone who helped the development with this project is affiliated nor indorsed with/by Panic Inc. 
+This is a reverse engineering project that I am doing for my own learning and research purposes.
+If anyone wants to learn more abt this project, feel free to DM me on discord, my user's "Mindstormpro3"
