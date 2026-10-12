@@ -29,8 +29,9 @@ Then get your `pdfw-b-patched` from the build folder and install it by opening t
 
 | Version | Downloadable? | Comp. Rev. A? | Comp Rev. B? | Notes |
 | :----: | :----: | :----: | :----: | :---- |
-| 3.1.0 | Not Yet | Planned | Planned | Version hasn't been released yet |
-| 3.0.3-6 | 3.0.6 is | Never | Never | SDK issue makes it very dificult w/ `symbols.db` + general fw instability |
+| 3.1.1 | Yes | Planned | Planned | Same as 3.1.0 |
+| 3.1.0 | No | Planned | Planned | Need to look into this, but first I need to get PB working on 3.0.2 |
+| 3.0.3-6 | No | Never | Never | SDK issue makes it very dificult w/ `symbols.db` + general fw instability |
 | 3.0.2 | No | Planned | Kinda | In Progress, Patch runs but issue with opening `payload.bin` |
 | < 3.0.2 | No | Never | Never | I don't have dumps so I cannot make a version for this |
 
